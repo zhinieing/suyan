@@ -17,8 +17,8 @@ Page({
         { id: '1', name: '浏览', selected: true },
         { id: '2', name: '评论', selected: false},
         { id: '3', name: '点赞', selected: false },
-        { id: '4', name: '赞赏', selected: false },
-        { id: '5', name: '最新评论', selected: false}
+        //{ id: '4', name: '赞赏', selected: false },
+        //{ id: '5', name: '最新评论', selected: false}
     ],
     tab: '1',
     showerror: "none",
@@ -136,6 +136,7 @@ Page({
                               count++;
                               item[0] = item.post_id;
                               item[1] = item.post_title;
+                              item[2] = item.post_thumbnail_image;
                               return item;
                           }))
                       });
@@ -178,6 +179,7 @@ Page({
                               count++;
                               item[0] = item.post_id;
                               item[1] = item.post_title;
+                              item[2] = item.post_thumbnail_image;
                               return item;
                           }))
                       });
@@ -216,6 +218,7 @@ Page({
                             count++;
                             item[0] = item.post_id;
                             item[1] = item.post_title;
+                            item[2] = item.post_thumbnail_image;
                             return item;
                         }))
                     });
@@ -255,6 +258,7 @@ Page({
                           count++;
                           item[0] = item.post;
                           item[1] = util.removeHTML(item.content.rendered + '(' + item.author_name+')');
+                          item[2] = item.post_thumbnail_image;
                          
                           return item;
                       }))

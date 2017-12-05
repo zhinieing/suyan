@@ -264,7 +264,7 @@ Page({
                 if (logs.length > 19) {
                     logs.pop();//去除最后一个
                 }
-                logs.unshift([id, response.data.title.rendered]);
+                logs.unshift([id, response.data.title.rendered, response.data.post_thumbnail_image]);
                 wx.setStorageSync('readLogs', logs);
              //end 
 

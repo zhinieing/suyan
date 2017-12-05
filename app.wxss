@@ -76,12 +76,12 @@
   position: absolute;
   left: 0rpx;
   top: 24rpx;
-  width: 200rpx;
+  width: 225rpx;
   height: 150rpx;
 }
 
 .common-list .list-item.has-img .content-title {
-  margin-left: 200rpx;
+  margin-left: 230rpx;
   height: 80rpx;
   margin-bottom: 20rpx;
 }
@@ -100,7 +100,7 @@
 }
 
 .common-list .list-item.has-img .content-date {
-  margin-left: 200rpx;
+  margin-left: 230rpx;
 }
 
 .common-list .list-item.has-img .content-date image {

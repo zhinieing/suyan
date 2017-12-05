@@ -13,10 +13,10 @@
       <view class="entry-date">
         <image src="../../images/calendar.png" style="height:24rpx;width:24rpx;"></image>
         <text class="entry-date-text">{{detailDate}}</text>
-        <block wx:if="{{detail.category_name !=null}}">
+        <!-- <block wx:if="{{detail.category_name !=null}}">
           <image src="../../images/category.png" style="height:24rpx;width:24rpx;margin-left: 20rpx;"></image>
           <text class="entry-icon-text">{{detail.category_name}}</text>
-        </block>
+        </block> -->
         <image src="../../images/comments.png" style="height:24rpx;width:24rpx;margin-left: 20rpx;"></image>
         <text class="entry-icon-text">{{detail.total_comments}}</text>
         <image src="../../images/pageviews.png" style="height:24rpx;width:24rpx;margin-left: 20rpx;"></image>
@@ -46,7 +46,7 @@
 
 
 
-    <view class="relatedPost" style="display:{{display}}">
+    <!-- <view class="relatedPost" style="display:{{display}}">
       <view class="relatedTitle">
         猜你喜欢
       </view>
@@ -58,7 +58,7 @@
 
         </block>
       </view>
-    </view>
+    </view> -->
 
     <view class="likePost" style="display:{{displayLike}}">
       <view class="relatedTitle">

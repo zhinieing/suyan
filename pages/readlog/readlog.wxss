@@ -27,7 +27,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #118fff;
+  background-color: #fff;
   height: 320rpx;
   width: 100%;
   /* position: absolute;
@@ -57,12 +57,55 @@
   font-size: 32rpx;
 }
 
-.log-list {
+/* .log-list {
   display: flex;
   flex-direction: column;
-  padding: 32rpx 0;
+  padding: 32rpx 0; */
   /* margin-top: 5rpx; */
+/* } */
+
+.topic-common-list {
+  padding: 25rpx 0rpx 20rpx 20rpx;  
+  margin: 0 auto;
 }
+
+.list-item {
+  position: relative;
+  float: left;
+  /* border-bottom: 1px solid #eee; */
+  overflow: hidden;
+  /* clear: both;  */
+  width: 201rpx;
+   /* border: 1px solid #ccc; 
+  border-radius: 6rpx; */
+  /* margin-bottom: 60rpx; */
+  margin-right: 27rpx;
+  background: #fff;
+}
+
+.list-item  image.cover {
+  width: 201rpx;
+  height: 134rpx;
+  border-radius: 10rpx;
+}
+
+.content-title {
+  padding: 16rpx 0rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.content-title text {
+  font-size: 24rpx;
+  line-height: 24rpx;
+  /* font-weight: bold; */
+  color: #495056;
+}
+
+
+
 
 .log-items {
   margin-top: 20rpx;
@@ -73,7 +116,7 @@
   font-size: 30rpx;
   color: #757575;
   text-align: left;
-}
+} 
 
 .top-bar {
    height: 100rpx; 
@@ -88,7 +131,7 @@
 .top-bar-item {
   display: inline-block;
   background: #fff;
-  width: 20%;
+  width: 33%;
   color: #9babba;
   text-align: center;
   line-height: 100rpx;
