@@ -1,7 +1,7 @@
 
 <template name="tempHeader">
   <view class="header">
-    <image src="../../images/logo.gif" style="height:120rpx;width:400rpx"></image>
+    <image src="../../images/logo_black.jpg" style="height:120rpx;width:400rpx"></image>
     <view>
       素言
     </view>

@@ -258,7 +258,6 @@ Page({
                           count++;
                           item[0] = item.post;
                           item[1] = util.removeHTML(item.content.rendered + '(' + item.author_name+')');
-                          item[2] = item.post_thumbnail_image;
                          
                           return item;
                       }))

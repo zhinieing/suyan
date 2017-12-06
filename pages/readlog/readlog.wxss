@@ -53,7 +53,7 @@
 }
 
 .userinfo-nickname {
-  color: #fff;
+  color: #495056;
   font-size: 32rpx;
 }
 
@@ -131,7 +131,7 @@
 .top-bar-item {
   display: inline-block;
   background: #fff;
-  width: 33%;
+  width: 33.3%;
   color: #9babba;
   text-align: center;
   line-height: 100rpx;

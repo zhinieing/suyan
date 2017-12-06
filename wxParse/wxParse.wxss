@@ -84,6 +84,11 @@ view{
     overflow:auto;
 }
 
+ .wxParse-p{
+    margin-top: 1.714285714em;
+    margin-bottom: 1.714285714em;
+} 
+
 .wxParse-video{
     text-align: center;
     margin: 10px 0;
@@ -93,9 +98,14 @@ view{
     width:100%;
 }
 
+.wxParse-audio{
+    display: none;
+}
+
 .wxParse-img{
     /*background-color: #efefef;*/
     overflow: hidden;
+    width: 100%;
 }
 
 .wxParse-blockquote {
@@ -149,6 +159,7 @@ view{
     background-color: #fff;
     margin-right: 5px;
 }
+
 
 /*.wxParse-table{
     width: 100%;

@@ -11,6 +11,10 @@ var wxRequest = require('../../utils/wxRequest.js')
 var app = getApp();
 
 Page({
+    onReady: function (e) {
+        this.audioCtx = wx.createAudioContext('myAudio')
+        this.audioCtx.play()
+    },
     data: {
         title: '文章内容',
         detail: {},

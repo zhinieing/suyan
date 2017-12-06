@@ -176,7 +176,7 @@ Page({
                     }
 
                     if (item.post_thumbnail_image == null || item.post_thumbnail_image == '') {
-                        item.post_thumbnail_image = '../../images/watch-life-logo-128.jpg';
+                      item.post_thumbnail_image = '../../images/logo_black.jpg';
                     }
                     item.date = util.cutstr(strdate, 10, 1);
                     return item;

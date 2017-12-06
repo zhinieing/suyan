@@ -139,7 +139,7 @@ module.exports = {
   getContentFirstImage: function (content){
     var regex = /<img.*?src=[\'"](.*?)[\'"].*?>/i;
     var arrReg = regex.exec(content);
-    var src ="../../images/watch-life-logo-128.jpg";
+    var src ="../../images/logo_black.jpg";
     if(arrReg){   
       src=arrReg[1];
     }

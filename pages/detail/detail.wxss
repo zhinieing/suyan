@@ -45,7 +45,7 @@
   color: #959595;
   font-weight: normal;
   outline: none;
-  margin-bottom: 60rpx;
+  margin-bottom: 30rpx;
   /* border-bottom: 1px solid #ededed; *//* margin-left: 30rpx; */
 }
 
