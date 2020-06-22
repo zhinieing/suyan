@@ -10,7 +10,6 @@ var app = getApp();
 Page({
 
   data: {
-    userInfo: {},
     readLogs: [],
     topBarItems: [
         // id name selected 选中状态
@@ -22,8 +21,8 @@ Page({
     ],
     tab: '1',
     showerror: "none",
-    shownodata:"none"
-  
+    shownodata:"none",
+    year: new Date().getFullYear()
   },
 
   /**
@@ -31,13 +30,9 @@ Page({
    */
   onLoad: function (options) {  
     var self = this;
-    if (!app.globalData.isGetOpenid) {
-        auth.getUsreInfo();
-    }
 
     self = this;
     self.fetchPostsData('1');
-    
   },
 
   // 跳转至查看文章详情
@@ -92,12 +87,9 @@ Page({
   },
   fetchPostsData: function (tab) {
       self = this;
-      var asdf = app.globalData.userInfo;
-      
       self.setData({
           showerror: 'none',
-          shownodata:'none',
-          userInfo: app.globalData.userInfo
+          shownodata:'none'
       });  
 
      var count =0;
@@ -288,7 +280,7 @@ Page({
       // 判断是否是第一次授权，非第一次授权且授权失败则进行提醒
       wx.getSetting({
           success: function success(res) {
-              console.log(res.authSetting);
+              console.log(res);
               var authSetting = res.authSetting;
               if (util.isEmptyObject(authSetting)) {
                   console.log('第一次授权');

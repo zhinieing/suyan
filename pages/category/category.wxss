@@ -39,7 +39,7 @@
   width: 654rpx;
   height: 436rpx;
   border-radius: 15rpx;
-  /* box-shadow: 6rpx 10rpx 10rpx #ABABAB;  */
+  box-shadow: 9rpx 6rpx 8rpx #b2b2b2; 
 }
 
 .content-title {

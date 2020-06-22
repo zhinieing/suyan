@@ -5,26 +5,23 @@ var WxParse = require('../../wxParse/wxParse.js');
 var wxApi = require('../../utils/wxApi.js')
 var wxRequest = require('../../utils/wxRequest.js')
 
+const db = wx.cloud.database()
+
 Page({
   data: {
     title: '文章列表',
     postsList: {},
-    pagesList: {},
-    categoriesList: {},
-    postsShowSwiperList: {},
+    postsDb: [],
     isLastPage: false,
     page: 1,
     search: '',
-    categories: 0,
-    categoriesName:'',
-    categoriesImage:"", 
+    categoryId:'',
     showerror:"none",
     isCategoryPage:"none",
     isSearchPage:"none",
     showallDisplay: "block",
     displaySwiper: "block",
     floatDisplay: "none",
-    searchKey:"",
   },
   formSubmit: function (e) {
     var url = '../list/list'
@@ -40,16 +37,16 @@ Page({
     var title = "分享“素言”";
     var path =""
 
-    if (this.data.categories && this.data.categories != 0)
+    if (this.data.categoryId)
   {
-      title += "的专题：" + this.data.categoriesList.name;
-      path = 'pages/list/list?categoryID=' + this.data.categoriesList.id;
+      title += "的专题：" + this.data.categoryId;
+      path = 'pages/list/list?categoryId=' + this.data.categoryId;
 
   }
   else
   {
-      title += "的搜索内容：" + this.data.searchKey;
-      path = 'pages/list/list?search=' + this.data.searchKey;
+      title += "的搜索内容：" + this.data.search;
+      path = 'pages/list/list?search=' + this.data.search;
   }
 
 
@@ -67,24 +64,18 @@ Page({
   reload:function(e)
   {
     var self = this;
-    if (self.data.categories && self.data.categories != 0) {
-      
+    if (self.data.categoryId) {
       self.setData({
-       // categories: options.categoryID,
         isCategoryPage: "block",
         showallDisplay: "none",
         showerror: "none",
-
       });
-      self.fetchCategoriesData(self.data.categories);
     }
     if (self.data.search && self.data.search != '') {
       self.setData({
-        //search: options.search,
         isSearchPage: "block",
         showallDisplay: "none",
-        showerror: "none",
-        searchKey: self.data.search
+        showerror: "none"
       })
     }
     self.fetchPostsData(self.data);
@@ -109,37 +100,41 @@ Page({
   },
   onLoad: function (options) {
     var self = this;
-    if (options.categoryID && options.categoryID != 0) {
-      self.setData({
-        categories: options.categoryID,
-        isCategoryPage:"block"
-        
-       
+    if (options.categoryId) {
+      wx.setNavigationBarTitle({
+        title: options.categoryId,
+        success: function (res) {
+        }
       });
-      self.fetchCategoriesData(options.categoryID);
+      self.setData({
+        categoryId: options.categoryId,
+        isCategoryPage:"block"
+      });
     }
     if (options.search && options.search != '') {
       wx.setNavigationBarTitle({
-        title: "搜索关键字："+options.search,
+        title: "搜索关键字：" + options.search,
         success: function (res) {
-          // success
         }
       });
       self.setData({
         search: options.search,
-        isSearchPage:"block",
-        searchKey: options.search
+        isSearchPage:"block"
       })
-
-      this.fetchPostsData(self.data);
-    }    
+    }   
+    db.collection('posts').get().then(res =>{
+      self.setData({
+        postsDb: res.data
+      })
+    })
+    this.fetchPostsData(self.data); 
   },
   //获取文章列表数据
   fetchPostsData: function (data) {
     var self = this;  
     if (!data) data = {};
     if (!data.page) data.page = 1;
-    if (!data.categories) data.categories = 0;
+    if (!data.categoryId) data.categoryId = 0;
     if (!data.search) data.search = '';
     if (data.page === 1) {
       self.setData({
@@ -152,44 +147,33 @@ Page({
       mask:true
     });
 
-    var getPostsRequest = wxRequest.getRequest(Api.getPosts(data));
+    var getPostsRequest = wxRequest.getRequest(Api.getCategoryList(data.categoryId));
 
     getPostsRequest.then(response =>{
-
         if (response.statusCode === 200) {
-            if (response.data.length < 6) {
-                self.setData({
-                    isLastPage: true
-                });
-            };
+            console.log(response)
+            self.setData({
+              isLastPage: true
+            });
             self.setData({
                 floatDisplay: "block",
                 showallDisplay: "block",
-                postsList: self.data.postsList.concat(response.data.map(function (item) {
-                    var strdate = item.date
-                    if (item.category_name != null) {
-
-                        item.categoryImage = "../../images/topic.png";
-                    }
-                    else {
-                        item.categoryImage = "";
-                    }
-
-                    if (item.post_thumbnail_image == null || item.post_thumbnail_image == '') {
-                      item.post_thumbnail_image = '../../images/logo_black.jpg';
-                    }
-                    item.date = util.cutstr(strdate, 10, 1);
-                    return item;
-                })),
-
+                postsList: self.data.postsList.concat(response.data.postlist.map(item => {
+                  item.date = util.cutstr(item.date, 10, 1);
+                  return item;
+                })).map(item => {
+                  let record = self.data.postsDb.filter(post => post._id == item.slug);
+                  if (record.length > 0) {
+                    item.commentNum = record[0].comments;
+                    item.viewNum = record[0].views;
+                    item.likeNum = record[0].likes;
+                  }
+                  return item;
+                })
             });
-            // setTimeout(function () {
-            //     wx.hideLoading();
-
-            // }, 1500);
-
-
-
+            setTimeout(function () {
+                wx.hideLoading();
+            }, 800);
         }
         else {
             if (response.data.code == "rest_post_invalid_page_number") {
@@ -208,9 +192,9 @@ Page({
         }   
 
     })
-    .catch(function(){        
+    .catch(function(error){        
         if (data.page == 1) {
-
+            console.log(error)
             self.setData({
                 showerror: "block",
                 floatDisplay: "none"
@@ -250,41 +234,41 @@ Page({
   },
 
   //获取分类列表
-  fetchCategoriesData: function (id) {
-    var self = this;
-    self.setData({
-      categoriesList: []
-    });
+  // fetchCategoriesData: function (id) {
+  //   var self = this;
+  //   self.setData({
+  //     categoriesList: []
+  //   });
 
-    var getCategoryRequest = wxRequest.getRequest(Api.getCategoryByID(id));
+  //   var getCategoryRequest = wxRequest.getRequest(Api.getCategoryByID(id));
 
-    getCategoryRequest.then(response =>{
+  //   getCategoryRequest.then(response =>{
 
-        var catImage = "";
-        if (typeof (response.data.category_thumbnail_image) == "undefined" || response.data.category_thumbnail_image == "") {
-            catImage = "../../images/website.png";
-        }
-        else {
-            catImage = response.data.category_thumbnail_image;
-        }
+  //       var catImage = "";
+  //       if (typeof (response.data.category_thumbnail_image) == "undefined" || response.data.category_thumbnail_image == "") {
+  //           catImage = "../../images/website.png";
+  //       }
+  //       else {
+  //           catImage = response.data.category_thumbnail_image;
+  //       }
 
-        self.setData({
-            categoriesList: response.data,
-            categoriesImage: catImage,
-            categoriesName: response.name
-        });
+  //       self.setData({
+  //           categoriesList: response.data,
+  //           categoriesImage: catImage,
+  //           categoriesName: response.name
+  //       });
 
-        wx.setNavigationBarTitle({
-            title: response.data.name,
-            success: function (res) {
-                // success
-            }
-        });
+  //       wx.setNavigationBarTitle({
+  //           title: response.data.name,
+  //           success: function (res) {
+  //               // success
+  //           }
+  //       });
 
-        self.fetchPostsData(self.data); 
+  //       self.fetchPostsData(self.data); 
 
-    })
-  },
+  //   })
+  // },
 
 })
 

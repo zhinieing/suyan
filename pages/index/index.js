@@ -7,10 +7,13 @@ var wxRequest = require('../../utils/wxRequest.js')
 
 import config from '../../utils/config.js'
 
+const db = wx.cloud.database()
+
 Page({
   data: {    
     postsList: [],
     postsShowSwiperList:[],
+    postsDb: [],
     isLastPage:false,    
     page: 1,
     search: '',
@@ -22,7 +25,7 @@ Page({
     displayHeader:"none",
     displaySwiper: "none",
     floatDisplay: "none",
-
+    year: new Date().getFullYear()
   },
   formSubmit: function (e) {
     var url = '../list/list'
@@ -45,7 +48,7 @@ Page({
   },
   onShareAppMessage: function () {
     return {
-      title: '“' + config.getWebsiteName+'”网站微信小程序,基于WordPress版小程序构建.技术支持：mingpeng.me',
+      title: config.getWebsiteName,
       path: 'pages/index/index',
       success: function (res) {
         // 转发成功
@@ -77,6 +80,12 @@ Page({
   onLoad: function (options) {
     var self = this; 
     this.fetchTopFivePosts();   
+    this.fetchPostsData(self.data);
+    db.collection('posts').get().then(res =>{
+      self.setData({
+        postsDb: res.data
+      })
+    })
   },
   onShow: function (options){
       wx.setStorageSync('openLinkCount', 0);
@@ -87,22 +96,9 @@ Page({
     //取置顶的文章
     var getPostsRequest = wxRequest.getRequest(Api.getSwiperPosts());
     getPostsRequest.then(response => {
-        if (response.data.status =='200' && response.data.posts.length > 0) {
+        if (response.statusCode === 200 && response.data.postlist.length > 0) {
                 self.setData({
-                    postsShowSwiperList: response.data.posts,
-                    postsShowSwiperList: self.data.postsShowSwiperList.concat(response.data.posts.map(function (item) {
-                        //item.firstImage = Api.getContentFirstImage(item.content.rendered);
-                        if (item.post_medium_image_300 == null || item.post_medium_image_300 == '') {
-                            if (item.content_first_image != null && item.content_first_image != '') {
-                                item.post_medium_image_300 = item.content_first_image;
-                            }
-                            else {
-                              item.post_medium_image_300 = "../../images/logo_black.jpg";
-                            }
-
-                        }
-                        return item;
-                    })),
+                    postsShowSwiperList: response.data.postlist,
                     showallDisplay: "block",
                     displaySwiper: "block"
                 });
@@ -119,10 +115,6 @@ Page({
             }
      
     })
-        .then(response=>{
-            self.fetchPostsData(self.data);
-
-        })
         .catch(function (response){
             console.log(response); 
             self.setData({
@@ -157,36 +149,43 @@ Page({
     getPostsRequest
         .then(response => {
             if (response.statusCode === 200) {
-
-                if (response.data.length < 6) {
+                if (response.data.data.length < 10) {
                     self.setData({
                         isLastPage: true
                     });
                 }
                 self.setData({
                     floatDisplay: "block",
-                    postsList: self.data.postsList.concat(response.data.map(function (item) {
-
-                        var strdate = item.date
-                        if (item.category_name != null) {
-
-                            item.categoryImage = "../../images/category.png";
+                    postsList: self.data.postsList.concat(response.data.data.map(item => {
+                      db.collection('posts').doc(item.slug).get({
+                        success: function(res) {
+                        },
+                        fail: function() {
+                          db.collection('posts').add({
+                            data: {
+                              _id: item.slug,
+                              comments: 0,
+                              views: 0,
+                              likes: 0
+                            }
+                          })
                         }
-                        else {
-                            item.categoryImage = "";
-                        }
-
-                        if (item.post_thumbnail_image == null || item.post_thumbnail_image == '') {
-                          item.post_thumbnail_image = "../../images/logo_black.jpg";
-                        }
-                        item.date = util.cutstr(strdate, 10, 1);
-                        return item;
-                    })),
-
+                      });
+                      item.date = util.cutstr(item.date, 10, 1);
+                      return item;
+                    })).map(item => {
+                      let record = self.data.postsDb.filter(post => post._id == item.slug);
+                      if (record.length > 0) {
+                        item.commentNum = record[0].comments;
+                        item.viewNum = record[0].views;
+                        item.likeNum = record[0].likes;
+                      }
+                      return item;
+                    })
                 });
                 setTimeout(function () {
                     wx.hideLoading();
-                }, 900);
+                }, 800);
             }
             else {
                 if (response.data.code == "rest_post_invalid_page_number") {
@@ -209,8 +208,10 @@ Page({
 
 
         })
+        .then()
         .catch(function (response)
         {
+            console.log(response)
             if (data.page == 1) {
 
                 self.setData({

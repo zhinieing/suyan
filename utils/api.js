@@ -3,21 +3,21 @@
 import config from 'config.js'
 
 var domain = config.getDomain;
-var HOST_URI = 'https://' + domain+'/wp-json/wp/v2/';
-var HOST_URI_WATCH_LIFE_JSON = 'https://' + domain + '/wp-json/watch-life-net/v1/';
+var HOST_URI = 'https://' + domain+'/api/';
+// var HOST_URI_WATCH_LIFE_JSON = 'https://' + domain + '/wp-json/watch-life-net/v1/';
    
 module.exports = {  
   // 获取文章列表数据
   getPosts: function (obj) {
-      var url = HOST_URI + 'posts?per_page=6&orderby=date&order=desc&page=' + obj.page;
+      var url = HOST_URI + 'posts/' + obj.page + '.json';
     
-    if (obj.categories != 0) {
-      url += '&categories=' + obj.categories;
-    }
-    else if (obj.search != '') {
-      url += '&search=' + encodeURIComponent(obj.search);
-    }     
-    return url;
+    // if (obj.categories != 0) {
+    //   url += '&categories=' + obj.categories;
+    // }
+    // else if (obj.search != '') {
+    //   url += '&search=' + encodeURIComponent(obj.search);
+    // }     
+    return url; 
 
   },
 
@@ -31,8 +31,7 @@ module.exports = {
   
   //获取首页滑动文章
   getSwiperPosts: function () {
-      var url = HOST_URI_WATCH_LIFE_JSON;
-      url +='post/swipe';
+      var url = HOST_URI + 'tags/topic.json';
       return url;
   },
 
@@ -56,18 +55,14 @@ module.exports = {
   // 获取特定slug的文章内容
   getPostBySlug: function (obj) {
       var url = HOST_URI + 'posts?slug=' + obj;
-
       return url;
-
   },
   // 获取内容页数据
   getPostByID: function (id) {
-    
-    return HOST_URI + 'posts/' + id;
+    return HOST_URI + 'articles/' + id + '.json';
   },
   // 获取页面列表数据
   getPages: function () {
-    
     return HOST_URI + 'pages';
   },
 
@@ -77,19 +72,12 @@ module.exports = {
   },
   //获取分类列表
   getCategories: function () {
-      var url ='';
-      //此处的域名不用换
-      if (domain =='www.watch-life.net'){
-          url = HOST_URI + 'categories?include=1,1059,98,416,189,374,6,463&orderby=count&order=desc';
-
-      }
-      else
-      {
-          url = HOST_URI + 'categories?per_page=100&orderby=count&order=desc';
-
-      }
-   
+    var url = HOST_URI + 'categories.json';
     return url
+  },
+  getCategoryList: function (id) {
+    var url = HOST_URI + 'categories/' + id + '.json';
+    return url;
   },
   //获取某个分类信息
   getCategoryByID: function (id) {

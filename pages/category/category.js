@@ -11,7 +11,8 @@ Page({
   data:{
     text:"Page topic",
     categoriesList:{},
-    floatDisplay:"none"
+    floatDisplay:"none",
+    year: new Date().getFullYear()
   },
   onLoad:function(options){
     wx.setNavigationBarTitle({
@@ -40,13 +41,7 @@ Page({
     getCategoriesRequest.then(response =>{
         self.setData({
             floatDisplay: "block",
-            categoriesList: self.data.categoriesList.concat(response.data.map(function (item) {
-                if (typeof (item.category_thumbnail_image) == "undefined" || item.category_thumbnail_image == "") {
-                    item.category_thumbnail_image = "../../images/website.png";
-
-                }
-                return item;
-            })),
+            categoriesList: response.data
         });        
     })
 
@@ -76,8 +71,7 @@ Page({
   redictIndex: function (e) {
     //console.log('查看某类别下的文章');  
     var id = e.currentTarget.dataset.id;
-    var name = e.currentTarget.dataset.item;
-    var url = '../list/list?categoryID=' + id;
+    var url = '../list/list?categoryId=' + id;
     wx.navigateTo({
       url: url
     });

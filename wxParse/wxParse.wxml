@@ -22,6 +22,19 @@
   />
 </template>
 
+<template name="WxEmojiView1">
+  <view class="WxEmojiView wxParse-inline" style="{{item.styleStr}}">
+    <block wx:for="{{item.textArray}}" wx:key="">
+      <block class="{{item.text == '\\n' ? 'wxParse-hide':''}}" wx:if="{{item.node == 'text'}}">
+        <view style="text-indent: 2em;">{{item.text}}</view>
+      </block>
+      <block wx:elif="{{item.node == 'element'}}">
+        <image class="wxEmoji" src="{{item.baseSrc}}{{item.text}}" />
+      </block>
+    </block>
+  </view>
+</template>
+
 <template name="WxEmojiView">
   <view class="WxEmojiView wxParse-inline" style="{{item.styleStr}}">
     <block wx:for="{{item.textArray}}" wx:key="">
@@ -201,7 +214,7 @@
   <!--判断是否是文本节点-->
   <block wx:elif="{{item.node == 'text'}}">
     <!--如果是，直接进行-->
-    <template is="WxEmojiView" data="{{item}}" />
+    <template is="WxEmojiView1" data="{{item}}" />
   </block>
 
 </template>

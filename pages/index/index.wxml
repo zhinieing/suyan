@@ -4,11 +4,11 @@
 <view class="index-header" style="display:{{displaySwiper}}">
   <swiper class="index-swiper" indicator-dots="true" interval="10000" autoplay="true" indicator-color="rgba(255, 255, 255, .2)" indicator-active-color="rgba(255, 255, 255, .7)">
     <block wx:key="id" wx:for="{{postsShowSwiperList}}">
-      <swiper-item id="{{item.id}}" index="{{index}}" bindtap="redictDetail">
-        <image mode="aspectFill" src="{{item.post_medium_image_300}}" style="width:100%" />
+      <swiper-item id="{{item.slug}}" index="{{index}}" bindtap="redictDetail">
+        <image mode="aspectFill" src="{{item.cover}}" style="width:100%" />
         <view class="swiper-mask"></view>
         <view class="swiper-desc">
-          <text>{{item.post_title}}</text>
+          <text>{{item.title}}</text>
         </view>
       </swiper-item>
     </block>
@@ -52,7 +52,7 @@
     </view>
 
     <view class="copyright" style="display:{{floatDisplay}}">
-      <template is="tempCopyright" />
+      <template is="tempCopyright" data="{{year}}"/>
     </view>
 
   </view>

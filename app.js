@@ -3,6 +3,7 @@
 App({
     
   onLaunch: function () {
+    wx.cloud.init()
     //调用API从本地缓存中获取数据
     var logs = wx.getStorageSync('logs') || []
     logs.unshift(Date.now())
@@ -30,10 +31,6 @@ App({
     }
   },
   globalData:{
-    userInfo:null,
-    openid:'',
-    isGetUserInfo:false,
-    isGetOpenid:false
-
+    openid: null
   }
 })

@@ -5,25 +5,24 @@
 <view class="container">
   <view class="container">
 
-    <audio src="{{article.source}}" id="myAudio" controls loop></audio>
+    <audio src="{{article.nodes[article.nodes.length - 1].tag == 'audio' ? article.nodes[article.nodes.length - 1].attr.src : ''}}" poster="{{article.nodes[article.nodes.length - 1].tag == 'audio' ? article.nodes[article.nodes.length - 1].attr.poster : ''}}" name="{{article.nodes[article.nodes.length - 1].tag == 'audio' ? article.nodes[article.nodes.length - 1].attr.name : ''}}" author="{{article.nodes[article.nodes.length - 1].tag == 'audio' ? article.nodes[article.nodes.length - 1].attr.author : ''}}" id="myAudio" controls loop style="margin-top: 8rpx;"></audio>
     <view class="content-article-detail" style="display:{{display}}">
       <view class="entry-title">
-        {{detail.title.rendered}}
+        {{detail.title}}
       </view>
       <view class="entry-date">
         <image src="../../images/calendar.png" style="height:24rpx;width:24rpx;"></image>
         <text class="entry-date-text">{{detailDate}}</text>
-        <!-- <block wx:if="{{detail.category_name !=null}}">
-          <image src="../../images/category.png" style="height:24rpx;width:24rpx;margin-left: 20rpx;"></image>
-          <text class="entry-icon-text">{{detail.category_name}}</text>
-        </block> -->
         <image src="../../images/comments.png" style="height:24rpx;width:24rpx;margin-left: 20rpx;"></image>
         <text class="entry-icon-text">{{detail.total_comments}}</text>
         <image src="../../images/pageviews.png" style="height:24rpx;width:24rpx;margin-left: 20rpx;"></image>
         <text class="entry-icon-text">{{detail.pageviews}}</text>
         <image src="../../images/home-like.png" style="height:24rpx;width:24rpx;margin-left: 20rpx;"></image>
         <text class="entry-icon-text">{{likeCount}}</text>
-
+        <block wx:if="{{detail.categories.length > 0}}">
+          <image src="../../images/category.png" style="height:24rpx;width:24rpx;margin-left: 20rpx;"></image>
+          <text class="entry-icon-text">{{detail.categories[0].name}}</text>
+        </block>
       </view>
       <view class="entry-summary">
 
@@ -193,9 +192,9 @@
       <modal title="{{dialog.title}}" hidden="{{dialog.hidden}}" no-cancel bindconfirm="confirm">{{dialog.content}}</modal>
     </view>
 
-    <view class="ditail-copyright" style="display:{{display}}">
+    <!-- <view class="ditail-copyright" style="display:{{display}}">
       <template is="tempCopyright" />
-    </view>
+    </view> -->
 
 
 

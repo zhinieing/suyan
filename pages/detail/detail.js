@@ -241,16 +241,15 @@ Page({
                 if (response.data.like_count !='0')  
                 {
                    _displayLike="block"
-                }
-                             
+                }         
                 self.setData({
                     detail: response.data,
                     likeCount: _likeCount ,
                     postID: id,
-                    link: response.data.link,
+                    link: config.getDomain + '/' + id,
                     detailDate: util.cutstr(response.data.date, 10, 1),
                     //wxParseData: WxParse('md',response.data.content.rendered)
-                    wxParseData: WxParse.wxParse('article', 'html', response.data.content.rendered, self, 5),
+                    wxParseData: WxParse.wxParse('article', 'html', response.data.content, self, 5),
                     display: 'block',
                     displayLike: _displayLike
                     
@@ -275,34 +274,34 @@ Page({
             })
             .then(response => {
                 wx.setNavigationBarTitle({
-                    title: res.data.title.rendered
+                    title: res.data.title
                 });
 
             })
             .then(response => {
-                var tagsArr = [];
-                tagsArr = res.data.tags
-                var tags = "";
-                for (var i = 0; i < tagsArr.length; i++) {
-                    if (i == 0) {
-                        tags += tagsArr[i];
-                    }
-                    else {
-                        tags += "," + tagsArr[i];
+                // var tagsArr = [];
+                // tagsArr = res.data.tags
+                // var tags = "";
+                // for (var i = 0; i < tagsArr.length; i++) {
+                //     if (i == 0) {
+                //         tags += tagsArr[i];
+                //     }
+                //     else {
+                //         tags += "," + tagsArr[i];
 
-                    }
-                }
-                if (tags != "") {
-                    var getPostTagsRequest = wxRequest.getRequest(Api.getPostsByTags(id, tags));
-                    getPostTagsRequest
-                        .then(response => {
-                            self.setData({
-                                postList: response.data
-                            });
+                //     }
+                // }
+                // if (tags != "") {
+                //     var getPostTagsRequest = wxRequest.getRequest(Api.getPostsByTags(id, tags));
+                //     getPostTagsRequest
+                //         .then(response => {
+                //             self.setData({
+                //                 postList: response.data
+                //             });
 
-                        })
+                //         })
 
-                }
+                // }
             }).then(response =>{
                 var updatePageviewsRequest = wxRequest.getRequest(Api.updatePageviews(id));
                 updatePageviewsRequest
