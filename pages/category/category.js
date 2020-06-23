@@ -57,7 +57,7 @@ Page({
   onShareAppMessage: function () {
     return {
       title: '分享“素言”小程序的专题栏目.',
-      path: 'pages/topic/topic',
+      path: 'pages/category/category',
       success: function (res) {
         // 转发成功
       },

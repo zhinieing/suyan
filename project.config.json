@@ -63,6 +63,12 @@
 					"pathName": "pages/detail/detail",
 					"query": "id=nopainsnogains",
 					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/tag/tag",
+					"pathName": "pages/tag/tag",
+					"scene": null
 				}
 			]
 		}

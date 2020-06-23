@@ -79,6 +79,15 @@ module.exports = {
     var url = HOST_URI + 'categories/' + id + '.json';
     return url;
   },
+   //获取标签列表
+   getTags: function () {
+    var url = HOST_URI + 'tags.json';
+    return url
+  },
+  getTagList: function (id) {
+    var url = HOST_URI + 'tags/' + id + '.json';
+    return url;
+  },
   //获取某个分类信息
   getCategoryByID: function (id) {
     var dd = HOST_URI + 'categories/' + id;

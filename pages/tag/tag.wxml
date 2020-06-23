@@ -1,24 +1,15 @@
 <import src="../../templates/copyright.wxml" />
-
-    <scroll-view style="height:100%;" scroll-y="true" lower-threshold="100rpx">
-      <view class="topic-common-list">
-        <block wx:key="id" wx:for="{{categoriesList}}">
-          <view class="list-item" data-id="{{item.name}}" bindtap="redictIndex">
-            <view>
-              <image src="{{'https://suyan.peng-ming.cn/categories/' + item.name + '.jpg'}}" mode="aspectFill" class="cover"></image>
-            </view>
-            <view class="content-title">
-              <text>{{item.name}}</text>
-            </view>
-            <view class="content-brief">
-              <text>{{item.description}}</text>
-            </view>
-          </view>
-
-        </block>
+<view class="tag-container">
+  <view class="tag-title">共计 {{tagsList.length}} 个标签</view>
+  <view class="topic-common-list">
+    <block wx:key="id" wx:for="{{tagsList}}">
+      <view class="list-item" style="font-size:{{item.count * 6 + 24}}rpx;color:rgb({{200 - item.count * 20}}, {{200 - item.count * 20}}, {{200 - item.count * 20}});" data-id="{{item.name}}" bindtap="redictIndex">
+        {{item.name}}
       </view>
-    </scroll-view>
+    </block>
+  </view>
 
-    <view class="copyright" style="display:{{floatDisplay}}">
-      <template is="tempCopyright" data="{{year}}"/>
-    </view>
+  <view class="copyright" style="display:{{floatDisplay}}">
+    <template is="tempCopyright" data="{{year}}"/>
+  </view>
+</view>

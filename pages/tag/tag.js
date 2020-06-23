@@ -10,13 +10,13 @@ var wxRequest = require('../../utils/wxRequest.js')
 Page({
   data:{
     text:"Page topic",
-    categoriesList:{},
+    tagsList:{},
     floatDisplay:"none",
     year: new Date().getFullYear()
   },
   onLoad:function(options){
     wx.setNavigationBarTitle({
-      title: '素言-专题',
+      title: '素言-标签',
       success: function (res) {
         // success
       }
@@ -25,39 +25,36 @@ Page({
       title: '正在加载',
       mask:true
     })
-   
-
-    this.fetchCategoriesData();
+  
+    this.fetchTagsData();
   },
   //获取分类列表
-  fetchCategoriesData: function () {
+  fetchTagsData: function () {
     var self = this;
     self.setData({
-      categoriesList: []
+      tagsList: []
     });
 
-    var getCategoriesRequest = wxRequest.getRequest(Api.getCategories());
+    var getTagsRequest = wxRequest.getRequest(Api.getTags());
 
-    getCategoriesRequest.then(response =>{
+    getTagsRequest.then(response =>{
         self.setData({
             floatDisplay: "block",
-            categoriesList: response.data
+            tagsList: response.data.filter(({name}) => name != 'topic')
         });        
     })
-
     .finally(function () {
         setTimeout(function () {
             wx.hideLoading();
         }, 900)
         wx.hideNavigationBarLoading();;
-
         });      
   },
 
   onShareAppMessage: function () {
     return {
-      title: '分享“素言”小程序的专题栏目.',
-      path: 'pages/topic/topic',
+      title: '分享“素言”小程序的标签栏目.',
+      path: 'pages/tag/tag',
       success: function (res) {
         // 转发成功
       },
@@ -71,7 +68,7 @@ Page({
   redictIndex: function (e) {
     //console.log('查看某类别下的文章');  
     var id = e.currentTarget.dataset.id;
-    var url = '../list/list?categoryId=' + id;
+    var url = '../list/list?tagId=' + id;
     wx.navigateTo({
       url: url
     });
