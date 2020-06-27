@@ -9,15 +9,26 @@
         <image src="{{'https://suyan.peng-ming.cn/categories/' + categoryId + '.jpg'}}" mode="aspectFill" class="cover">
         </image>
         <view class="topic-content-title">
-          <text>{{categoryId}}</text>
+          {{categoryId}}
         </view>
-        <view class="topic-content-title-line"></view>
         <!-- <view class="topic-content-brief">
           <text>{{categoriesList.description}}</text>
         </view> -->
       </view>
     </view>
 
+    <view class="topic-common-list" style="display:{{isTagPage}}">
+      <view class="topic-list-item">
+        <image src="{{postsList.length > 0 ? postsList[0].cover : ''}}" mode="aspectFill" class="cover">
+        </image>
+        <view class="topic-content-title">
+          {{tagId}}
+        </view>
+        <!-- <view class="topic-content-brief">
+          <text>{{categoriesList.description}}</text>
+        </view> -->
+      </view>
+    </view>
 
     <view class="topic-common-list" style="display:{{isSearchPage}}">
       <view class="topic-list-item">
@@ -25,10 +36,8 @@
           <image src="../../images/logo_black.jpg" class="cover"></image>
         </view>
         <view class="topic-content-title">
-          <text>搜索关键字：</text>
-          <text class="searchKey">{{search}}</text>
+          搜索关键字：{{search}}
         </view>
-        <view class="topic-content-title-line"></view>
         <view class="topic-content-brief">
           <text>本搜索是全文搜索</text>
         </view>
@@ -61,7 +70,7 @@
     </view>
 
     <view class="copyright" style="display:{{floatDisplay}}">
-      <template is="tempCopyright" />
+      <template is="tempCopyright" data="{{year}}"/>
     </view>
 </view>
   </scroll-view>

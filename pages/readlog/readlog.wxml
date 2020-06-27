@@ -43,12 +43,12 @@
     <scroll-view style="height:100%;" scroll-y="true" lower-threshold="100rpx">
       <view class="topic-common-list">
         <block wx:key="id" wx:for="{{readLogs}}">
-          <view class="list-item" index="{{index}}" id="{{item[0]}}" catchtap="redictDetail">
+          <view class="list-item" index="{{index}}" id="{{item.postId}}" catchtap="redictDetail">
             <view>
-              <image src="{{item[2]}}" mode="aspectFill" class="cover"></image>
+              <image src="{{item.cover}}" mode="aspectFill" class="cover"></image>
             </view>
             <view class="content-title">
-              <text>{{item[1]}}</text>
+              <text>{{item.title}}</text>
             </view>
           </view>
         </block>

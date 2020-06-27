@@ -7,6 +7,9 @@ var WxParse = require('../../wxParse/wxParse.js');
 var wxApi = require('../../utils/wxApi.js')
 var wxRequest = require('../../utils/wxRequest.js');
 var app = getApp();
+
+const db = wx.cloud.database()
+
 Page({
 
   data: {
@@ -29,12 +32,8 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {  
-    var self = this;
-
-    self = this;
-    self.fetchPostsData('1');
+    this.fetchPostsData(this.data.tab);
   },
-
   // 跳转至查看文章详情
   redictDetail: function (e) {
     // console.log('查看文章');
@@ -92,7 +91,7 @@ Page({
           shownodata:'none'
       });  
 
-     var count =0;
+     var count = 0;
         
       if (tab == '1')
       {
@@ -103,7 +102,6 @@ Page({
               })
           });
 
-
           if (count == 0) {
               self.setData({
                   shownodata: 'block'
@@ -112,89 +110,56 @@ Page({
 
           
       }
-      else if (tab == '2')
-       {
-          self.setData({
-              readLogs: []
-          });
-          if (app.globalData.isGetOpenid) {
-              var openid = app.globalData.openid;
-              var getMyCommentsPosts = wxRequest.getRequest(Api.getWeixinComment(openid));
-              getMyCommentsPosts.then(response=>{
+      else if (tab == '2') {
+            self.setData({
+                readLogs: []
+            });
+            db.collection('comments').where({
+                _openid: app.globalData.openid
+            }).field({
+                postId: true,
+                title: true,
+                cover: true
+            })
+            .get({
+                success: function(res) {
+                    if (res.data.length > 0) {
+                        self.setData({
+                            readLogs: res.data
+                        })
+                    } else {
+                        self.setData({
+                            shownodata: 'block'
+                        })
+                    }
+                }
+            })
 
-                  if (response.statusCode == 200) { 
-                      self.setData({
-                          readLogs: self.data.readLogs.concat(response.data.data.map(function (item) {
-                              count++;
-                              item[0] = item.post_id;
-                              item[1] = item.post_title;
-                              item[2] = item.post_thumbnail_image;
-                              return item;
-                          }))
-                      });
-                      if (count == 0) {
-                          self.setData({
-                              shownodata: 'block'
-                          });
-                      } 
-                  }
-                  else
-                  {
-                      console.log(response);
-                      self.setData({
-                          showerror: 'block' 
-                      });
-                      
-                  }
-              })
-
-          }
-          else
-          {
-              self.userAuthorization
-          }          
-
-       } 
-
+        } 
       else if (tab == '3') {
-          this.setData({
-              readLogs: []
-          });
-          if (app.globalData.isGetOpenid) {
-              var openid = app.globalData.openid;
-              var getMylikePosts = wxRequest.getRequest(Api.getMyLikeUrl(openid));
-              getMylikePosts.then(response => {
-
-                  if (response.statusCode == 200) {
-                      this.setData({
-                          readLogs: self.data.readLogs.concat(response.data.data.map(function (item) {
-                              count++;
-                              item[0] = item.post_id;
-                              item[1] = item.post_title;
-                              item[2] = item.post_thumbnail_image;
-                              return item;
-                          }))
-                      });
-                      if (count == 0) {
-                          self.setData({
-                              shownodata: 'block'
-                          });
-                      } 
-                  }
-                  else {
-                      console.log(response);
-                      this.setData({
-                          showerror: 'block'
-                      });
-
-                  }
-              })
-
-          }
-          else {
-              self.userAuthorization
-          }
-
+        self.setData({
+            readLogs: []
+        });
+        db.collection('likes').where({
+            _openid: app.globalData.openid
+        }).field({
+            postId: true,
+            title: true,
+            cover: true
+        })
+        .get({
+            success: function(res) {
+                if (res.data.length > 0) {
+                    self.setData({
+                        readLogs: res.data
+                    })
+                } else {
+                    self.setData({
+                        shownodata: 'block'
+                    })
+                }
+            }
+        })
       }
         else if (tab == '4') {
         this.setData({

@@ -14,7 +14,7 @@ Page{
   margin: 16rpx auto 0;
   font-size: 36rpx;
   line-height: 2;
-  color: #555;
+  color: #3a4040;
 }
 
 .topic-common-list {
@@ -24,7 +24,7 @@ Page{
    text-align: center;
    font-size: 30rpx;
    line-height: 2;
-   color: #555;
+   color: #3a4040;
 }
 
 .list-item {

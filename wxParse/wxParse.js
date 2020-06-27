@@ -45,6 +45,10 @@ function wxParse(bindName = 'wxParseData', type='html', data='<div class="color:
   if(typeof(imagePadding) != 'undefined'){
     transData.view.imagePadding = imagePadding
   }
+  transData.music = transData.nodes[transData.nodes.length - 1].tag == 'audio' ? transData.nodes[transData.nodes.length - 1].attr.src : '';
+  transData.poster = transData.nodes[transData.nodes.length - 1].tag == 'audio' ? transData.nodes[transData.nodes.length - 1].attr.poster : '';
+  transData.musicName = transData.nodes[transData.nodes.length - 1].tag == 'audio' ? transData.nodes[transData.nodes.length - 1].attr.name : '';
+  transData.musicAuthor = transData.nodes[transData.nodes.length - 1].tag == 'audio' ? transData.nodes[transData.nodes.length - 1].attr.author : '';
   var bindData = {};
   bindData[bindName] = transData;
   that.setData(bindData)

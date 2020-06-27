@@ -9,10 +9,10 @@
         <view class="content-date">
           <image src="../../images/calendar.png"></image>
           <text>{{item.date}}</text>
-          <image src="../../images/comments.png"></image>
-          <text>{{item.commentNum ? item.commentNum : 0}}</text>
           <image src="../../images/pageviews.png"></image>
           <text>{{item.viewNum ? item.viewNum : 0}}</text>
+          <image src="../../images/comments.png"></image>
+          <text>{{item.commentNum ? item.commentNum : 0}}</text>
           <image src="../../images/home-like.png"></image>
           <text>{{item.likeNum ? item.likeNum : 0}}</text>        
         </view>

@@ -10,18 +10,21 @@ const db = wx.cloud.database()
 Page({
   data: {
     title: '文章列表',
-    postsList: {},
+    postsList: [],
     postsDb: [],
     isLastPage: false,
     page: 1,
     search: '',
     categoryId:'',
+    tagId:'',
     showerror:"none",
     isCategoryPage:"none",
+    isTagPage:"none",
     isSearchPage:"none",
     showallDisplay: "block",
     displaySwiper: "block",
     floatDisplay: "none",
+    year: new Date().getFullYear()
   },
   formSubmit: function (e) {
     var url = '../list/list'
@@ -111,6 +114,17 @@ Page({
         isCategoryPage:"block"
       });
     }
+    if (options.tagId) {
+      wx.setNavigationBarTitle({
+        title: options.tagId,
+        success: function (res) {
+        }
+      });
+      self.setData({
+        tagId: options.tagId,
+        isTagPage:"block"
+      });
+    }
     if (options.search && options.search != '') {
       wx.setNavigationBarTitle({
         title: "搜索关键字：" + options.search,
@@ -147,8 +161,13 @@ Page({
       mask:true
     });
 
-    var getPostsRequest = wxRequest.getRequest(Api.getCategoryList(data.categoryId));
-
+    var getPostsRequest;
+    if (self.data.categoryId != '') {
+      getPostsRequest = wxRequest.getRequest(Api.getCategoryList(data.categoryId));
+    } else if (self.data.tagId != '') {
+      getPostsRequest = wxRequest.getRequest(Api.getTagList(data.tagId));
+    }
+  
     getPostsRequest.then(response =>{
         if (response.statusCode === 200) {
             console.log(response)
