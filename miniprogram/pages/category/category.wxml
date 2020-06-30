@@ -5,7 +5,7 @@
         <block wx:key="id" wx:for="{{categoriesList}}">
           <view class="list-item" data-id="{{item.name}}" bindtap="redictIndex">
             <view>
-              <image src="{{'https://suyan.peng-ming.cn/categories/' + item.name + '.jpg'}}" mode="aspectFill" class="cover"></image>
+              <image src="{{item.cover ? item.cover : '../../images/life-thinking.jpg'}}" mode="aspectFill" class="cover"></image>
             </view>
             <view class="content-title">
               <text>{{item.name}}</text>

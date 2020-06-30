@@ -19,7 +19,7 @@
 
     <view class="topic-common-list" style="display:{{isTagPage}}">
       <view class="topic-list-item">
-        <image src="{{postsList.length > 0 ? postsList[0].cover : ''}}" mode="aspectFill" class="cover">
+        <image src="{{postsList.length > 0 ? postsList[0].cover : '../../images/logo_black.jpg'}}" mode="aspectFill" class="cover">
         </image>
         <view class="topic-content-title">
           {{tagId}}
@@ -33,14 +33,14 @@
     <view class="topic-common-list" style="display:{{isSearchPage}}">
       <view class="topic-list-item">
         <view>
-          <image src="../../images/logo_black.jpg" class="cover"></image>
+          <image src="{{postsList.length > 0 ? postsList[0].cover : '../../images/logo_black.jpg'}}" mode="aspectFill" class="cover"></image>
         </view>
         <view class="topic-content-title">
-          搜索关键字：{{search}}
+          关键字：{{search}}
         </view>
-        <view class="topic-content-brief">
+        <!-- <view class="topic-content-brief">
           <text>本搜索是全文搜索</text>
-        </view>
+        </view> -->
       </view>
     </view>
 

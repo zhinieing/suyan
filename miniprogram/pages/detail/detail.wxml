@@ -3,7 +3,7 @@
 <import src="../../templates/header.wxml" />
 <import src="../../templates/copyright.wxml" />
 <view class="container">
-  <audio src="{{article.music}}" poster="{{article.poster}}" name="{{article.musicName}}" author="{{article.musicAuthor}}" controls loop style="margin-top: 8rpx;"></audio>
+  <audio src="{{article.music}}" poster="{{article.poster}}" name="{{article.musicName}}" author="{{article.musicAuthor}}" controls loop id="myAudio" style="margin-top: 8rpx;"></audio>
   <view class="content-article-detail" style="display:{{display}}">
     <view class="entry-title">
       {{detail.title}}
@@ -154,11 +154,11 @@
 
     </block>
 
-    <view>
-      <view class="more-comment" bindtap="loadMore" hidden="{{isLastPage}}">
-        加载更多...
+    <view class="loadingmore">
+      <view hidden="{{isLastPage}}">
+        <button class="more-button" size="mini" bindtap="loadMore">加载更多...</button>
       </view>
-      <view class="more-comment" hidden="{{!isLastPage}}">--- end ---</view>
+      <view class="no-more" hidden="{{!isLastPage}}">--- End ---</view>
     </view>
     <modal title="{{dialog.title}}" hidden="{{dialog.hidden}}" no-cancel bindconfirm="confirm">{{dialog.content}}</modal>
   </view>

@@ -34,21 +34,27 @@ Page({
     self.setData({
       tagsList: []
     });
-
+    wx.showLoading({
+      title: '正在加载',
+      mask:true
+    });
     var getTagsRequest = wxRequest.getRequest(Api.getTags());
 
     getTagsRequest.then(response =>{
-        self.setData({
-            floatDisplay: "block",
-            tagsList: response.data.filter(({name}) => name != 'topic')
-        });        
+        if (response.statusCode === 200) {
+          self.setData({
+              floatDisplay: "block",
+              tagsList: response.data.filter(({name}) => name != 'topic')
+          });
+        }  
+        setTimeout(function () {
+          wx.hideLoading();
+        }, 1000)      
     })
     .finally(function () {
-        setTimeout(function () {
-            wx.hideLoading();
-        }, 900)
+        wx.hideLoading();
         wx.hideNavigationBarLoading();;
-        });      
+      });      
   },
 
   onShareAppMessage: function () {

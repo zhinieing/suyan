@@ -15,8 +15,8 @@ const $ = db.command.aggregate
 
 Page({
     onReady: function (e) {
-        // this.audioCtx = wx.createInnerAudioContext('myAudio')
-        // this.audioCtx.play()
+        this.audioCtx = wx.createAudioContext('myAudio')
+        this.audioCtx.play()
     },
     data: {
         title: '文章内容',
@@ -202,58 +202,68 @@ Page({
     //获取文章内容
     fetchDetailData: function (id) {
         var self = this;
+        wx.showLoading({
+            title: '正在加载',
+            mask:true
+          });
         var getPostDetailRequest = wxRequest.getRequest(Api.getPostByID(id));
 
         getPostDetailRequest
             .then(response => {
-                self.setData({
-                    detail: response.data,
-                    postID: id,
-                    link: config.getDomain + '/' + id,
-                    detailDate: util.cutstr(response.data.date, 10, 1),
-                    wxParseData: WxParse.wxParse('article', 'html', response.data.content, self, 5),
-                    display: 'block',
-                    'postDb.views': self.data.postDb.views + 1
-                });
-
-                wx.setNavigationBarTitle({
-                    title: response.data.title
-                });
-
-                db.collection('posts').doc(id).update({
-                    data: {
-                        views: self.data.postDb.views
-                    }
-                });
-
-                self.getIslike(id);
-                self.getLikeList(id);
-                self.getCommentList(id, self.data.page);
-
-                // 调用API从本地缓存中获取阅读记录并记录
-                var logs = wx.getStorageSync('readLogs') || [];
-                // 过滤重复值
-                if (logs.length > 0) {
-                    logs = logs.filter(function (log) {
-                        return log.postId !== id;
+                if (response.statusCode === 200) {
+                    self.setData({
+                        detail: response.data,
+                        postID: id,
+                        link: config.getDomain + '/' + id,
+                        detailDate: util.cutstr(response.data.date, 10, 1),
+                        wxParseData: WxParse.wxParse('article', 'html', response.data.content, self, 5),
+                        display: 'block',
+                        'postDb.views': self.data.postDb.views + 1
                     });
-                }
-                // 如果超过指定数量
-                if (logs.length > 19) {
-                    logs.pop();//去除最后一个
-                }
-                logs.unshift({
-                    postId: id,
-                    title: response.data.title,
-                    cover: response.data.cover
-                });
-                wx.setStorage({
-                    key: 'readLogs',
-                    data: logs
-                })
-             
 
+                    wx.setNavigationBarTitle({
+                        title: response.data.title
+                    });
+
+                    db.collection('posts').doc(id).update({
+                        data: {
+                            views: self.data.postDb.views
+                        }
+                    });
+
+                    self.getIslike(id);
+                    self.getLikeList(id);
+                    self.getCommentList(id, self.data.page);
+
+                    // 调用API从本地缓存中获取阅读记录并记录
+                    var logs = wx.getStorageSync('readLogs') || [];
+                    // 过滤重复值
+                    if (logs.length > 0) {
+                        logs = logs.filter(function (log) {
+                            return log.postId !== id;
+                        });
+                    }
+                    // 如果超过指定数量
+                    if (logs.length > 19) {
+                        logs.pop();//去除最后一个
+                    }
+                    logs.unshift({
+                        postId: id,
+                        title: response.data.title,
+                        cover: response.data.cover
+                    });
+                    wx.setStorage({
+                        key: 'readLogs',
+                        data: logs
+                    })
+                }
+                setTimeout(function () {
+                    wx.hideLoading();
+                }, 1000);
             })
+            .finally(function () {
+                wx.hideLoading();
+            })  
     },
     //给a标签添加跳转和复制链接事件
     wxParseTagATap: function (e) {

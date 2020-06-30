@@ -48,7 +48,13 @@ function wxParse(bindName = 'wxParseData', type='html', data='<div class="color:
   transData.music = transData.nodes[transData.nodes.length - 1].tag == 'audio' ? transData.nodes[transData.nodes.length - 1].attr.src : '';
   transData.poster = transData.nodes[transData.nodes.length - 1].tag == 'audio' ? transData.nodes[transData.nodes.length - 1].attr.poster : '';
   transData.musicName = transData.nodes[transData.nodes.length - 1].tag == 'audio' ? transData.nodes[transData.nodes.length - 1].attr.name : '';
+  if (transData.musicName instanceof Array) {
+    transData.musicName = transData.musicName.join(' ')
+  }
   transData.musicAuthor = transData.nodes[transData.nodes.length - 1].tag == 'audio' ? transData.nodes[transData.nodes.length - 1].attr.author : '';
+  if (transData.musicAuthor instanceof Array) {
+    transData.musicAuthor = transData.musicName.join(' ')
+  }
   var bindData = {};
   bindData[bindName] = transData;
   that.setData(bindData)

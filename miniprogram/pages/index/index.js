@@ -183,32 +183,12 @@ Page({
                       return item;
                     })
                 });
-                setTimeout(function () {
-                    wx.hideLoading();
-                }, 800);
             }
-            else {
-                if (response.data.code == "rest_post_invalid_page_number") {
-                    self.setData({
-                        isLastPage: true
-                    });
-                    wx.showToast({
-                        title: '没有更多内容',
-                        mask: false,
-                        duration: 1500
-                    });
-                }
-                else {
-                    wx.showToast({
-                        title: response.data.message,
-                        duration: 1500
-                    })
-                }
-            }
-
-
+            
+            setTimeout(function () {
+              wx.hideLoading();
+            }, 1000);
         })
-        .then()
         .catch(function (response)
         {
             console.log(response)

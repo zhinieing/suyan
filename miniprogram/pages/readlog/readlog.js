@@ -70,6 +70,9 @@ Page({
   {
       
   },
+  reload: function() {
+    this.fetchPostsData(this.data.tab);
+  },
   onShareAppMessage: function () {
       var title = "分享我在“" + config.getWebsiteName + "浏览、评论、点赞、赞赏的文章";
       var path = "pages/readlog/readlog";
@@ -132,6 +135,11 @@ Page({
                             shownodata: 'block'
                         })
                     }
+                },
+                fail: function(res) {
+                    self.setData({
+                        showerror: 'block'
+                    });
                 }
             })
 
@@ -158,6 +166,11 @@ Page({
                         shownodata: 'block'
                     })
                 }
+            },
+            fail: function(res) {
+                self.setData({
+                    showerror: 'block'
+                });
             }
         })
       }

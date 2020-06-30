@@ -35,23 +35,29 @@ Page({
     self.setData({
       categoriesList: []
     });
+    wx.showLoading({
+      title: '正在加载',
+      mask:true
+    });
 
     var getCategoriesRequest = wxRequest.getRequest(Api.getCategories());
 
     getCategoriesRequest.then(response =>{
-        self.setData({
-            floatDisplay: "block",
-            categoriesList: response.data
-        });        
-    })
-
-    .finally(function () {
+        if (response.statusCode === 200) {
+          self.setData({
+              floatDisplay: "block",
+              categoriesList: response.data
+          });
+        }   
         setTimeout(function () {
-            wx.hideLoading();
-        }, 900)
-        wx.hideNavigationBarLoading();;
+          wx.hideLoading();
+        }, 1000)     
+    })
+    .finally(function () {
+      wx.hideLoading();
+      wx.hideNavigationBarLoading();;
 
-        });      
+    });      
   },
 
   onShareAppMessage: function () {

@@ -66,32 +66,33 @@
 /* } */
 
 .topic-common-list {
-  padding: 25rpx 0rpx 20rpx 20rpx;  
-  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  margin-top: 20rpx;
 }
 
 .list-item {
-  position: relative;
-  float: left;
   /* border-bottom: 1px solid #eee; */
-  overflow: hidden;
+  /* overflow: hidden; */
   /* clear: both;  */
-  width: 201rpx;
+  width: 234rpx;
    /* border: 1px solid #ccc; 
   border-radius: 6rpx; */
   /* margin-bottom: 60rpx; */
-  margin-right: 27rpx;
+  padding: 12rpx;
+  box-sizing: border-box;
   background: #fff;
 }
 
 .list-item  image.cover {
-  width: 201rpx;
-  height: 134rpx;
+  width: 210rpx;
+  height: 140rpx;
   border-radius: 10rpx;
 }
 
 .content-title {
-  padding: 16rpx 0rpx;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

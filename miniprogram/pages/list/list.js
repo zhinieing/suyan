@@ -74,6 +74,13 @@ Page({
         showerror: "none",
       });
     }
+    if (self.data.tagId) {
+      self.setData({
+        isTagPage: "block",
+        showallDisplay: "none",
+        showerror: "none",
+      });
+    }
     if (self.data.search && self.data.search != '') {
       self.setData({
         isSearchPage: "block",
@@ -166,15 +173,55 @@ Page({
       getPostsRequest = wxRequest.getRequest(Api.getCategoryList(data.categoryId));
     } else if (self.data.tagId != '') {
       getPostsRequest = wxRequest.getRequest(Api.getTagList(data.tagId));
+    } else {
+      getPostsRequest = wxRequest.getRequest(Api.getSearch());
     }
   
     getPostsRequest.then(response =>{
         if (response.statusCode === 200) {
-            console.log(response)
             self.setData({
               isLastPage: true
             });
-            self.setData({
+
+            if (self.data.search != '') {
+              var keywords = self.data.search.split(/[\s\-]+/);
+
+              self.setData({
+                floatDisplay: "block",
+                showallDisplay: "block",
+                postsList: self.data.postsList.concat(response.data.filter(item => {
+                  var result = false
+                  keywords.some(keyword =>{
+                    if (item.title.indexOf(keyword) > -1 || item.content.indexOf(keyword) > -1) {
+                      result = true
+                      return true
+                    }
+                  })
+                  return result
+                }).map(item => {
+                  var post = {}
+                  post.title = item.title
+                  post.slug = item.slug
+                  post.cover = item.cover
+                  post.date = util.cutstr(item.date, 10, 1)
+  
+                  let record = self.data.postsDb.filter(post => post._id == item.slug);
+                  if (record.length > 0) {
+                    post.commentNum = record[0].comments;
+                    post.viewNum = record[0].views;
+                    post.likeNum = record[0].likes;
+                  }
+                  return post;
+                }))
+              })
+
+              if (self.data.postsList.length == 0) {
+                wx.showToast({
+                  title: '什么都没找到',
+                })
+              }
+            } else {
+              self.setData({
                 floatDisplay: "block",
                 showallDisplay: "block",
                 postsList: self.data.postsList.concat(response.data.postlist.map(item => {
@@ -189,27 +236,13 @@ Page({
                   }
                   return item;
                 })
-            });
-            setTimeout(function () {
-                wx.hideLoading();
-            }, 800);
+              });
+            }
         }
-        else {
-            if (response.data.code == "rest_post_invalid_page_number") {
 
-                self.setData({
-                    isLastPage: true
-                });
-
-            }
-            else {
-                wx.showToast({
-                    title: response.data.message,
-                    duration: 1500
-                })
-            }
-        }   
-
+        setTimeout(function () {
+          wx.hideLoading();
+        }, 1000);
     })
     .catch(function(error){        
         if (data.page == 1) {
@@ -218,26 +251,12 @@ Page({
                 showerror: "block",
                 floatDisplay: "none"
             });
-
-        }
-        else {
-            wx.showModal({
-                title: '加载失败',
-                content: '加载数据失败,请重试.',
-                showCancel: false,
-            });
-
-
-            self.setData({
-                page: data.page - 1
-            });
         }
 
     })
-        .finally(function () {
-            wx.hideLoading();
-
-        })  
+    .finally(function () {
+        wx.hideLoading();
+    })  
   },  
 
 

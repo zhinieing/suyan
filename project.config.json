@@ -1,5 +1,6 @@
 {
 	"description": "项目配置文件。",
+	"miniprogramRoot": "miniprogram/",
 	"cloudfunctionRoot": "cloudfunctions/",
 	"setting": {
 		"urlCheck": true,
@@ -29,7 +30,7 @@
 		"userConfirmedUseCompilerModuleSwitch": false
 	},
 	"compileType": "miniprogram",
-	"libVersion": "2.11.2",
+	"libVersion": "2.7.7",
 	"appid": "wxcd1614c39b16926e",
 	"projectname": "suyan",
 	"simulatorType": "wechat",
@@ -60,17 +61,10 @@
 			"current": -1,
 			"list": [
 				{
-					"id": 0,
-					"name": "pages/readlog/readlog",
-					"pathName": "pages/readlog/readlog",
-					"query": "",
-					"scene": null
-				},
-				{
-					"id": -1,
-					"name": "pages/tag/tag",
-					"pathName": "pages/tag/tag",
-					"query": "",
+					"id": 1,
+					"name": "pages/",
+					"pathName": "pages/detail/detail",
+					"query": "id=zhinie",
 					"scene": null
 				}
 			]
