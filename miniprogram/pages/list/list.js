@@ -143,11 +143,33 @@ Page({
         isSearchPage:"block"
       })
     }   
-    db.collection('posts').get().then(res =>{
-      self.setData({
-        postsDb: res.data
-      })
-    })
+    wx.cloud.callFunction({
+      name: 'posts',
+      data: {},
+      success: res => {
+          self.setData({
+            postsDb: res.result.data,
+            postsList: self.data.postsList.map(item => {
+              let record = null;
+              res.result.data.some(post => {
+                if (post._id == item.slug) {
+                  record = post
+                  return true
+                }
+              });
+              if (record != null) {
+                item.commentNum = record.comments;
+                item.viewNum = record.views;
+                item.likeNum = record.likes;
+              }
+              return item;
+            })
+          })
+      },
+      fail: err => {
+        console.error('[云函数] [login] 调用失败', err)
+      }
+    });
     this.fetchPostsData(self.data); 
   },
   //获取文章列表数据
@@ -205,11 +227,17 @@ Page({
                   post.cover = item.cover
                   post.date = util.cutstr(item.date, 10, 1)
   
-                  let record = self.data.postsDb.filter(post => post._id == item.slug);
-                  if (record.length > 0) {
-                    post.commentNum = record[0].comments;
-                    post.viewNum = record[0].views;
-                    post.likeNum = record[0].likes;
+                  let record = null;
+                  self.data.postsDb.some(post => {
+                    if (post._id == item.slug) {
+                      record = post
+                      return true
+                    }
+                  });
+                  if (record != null) {
+                    post.commentNum = record.comments;
+                    post.viewNum = record.views;
+                    post.likeNum = record.likes;
                   }
                   return post;
                 }))

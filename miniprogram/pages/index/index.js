@@ -81,11 +81,33 @@ Page({
     var self = this; 
     this.fetchTopFivePosts();   
     this.fetchPostsData(self.data);
-    db.collection('posts').get().then(res =>{
-      self.setData({
-        postsDb: res.data
-      })
-    })
+    wx.cloud.callFunction({
+      name: 'posts',
+      data: {},
+      success: res => {
+          self.setData({
+            postsDb: res.result.data,
+            postsList: self.data.postsList.map(item => {
+              let record = null;
+              res.result.data.some(post => {
+                if (post._id == item.slug) {
+                  record = post
+                  return true
+                }
+              });
+              if (record != null) {
+                item.commentNum = record.comments;
+                item.viewNum = record.views;
+                item.likeNum = record.likes;
+              }
+              return item;
+            })
+          })
+      },
+      fail: err => {
+        console.error('[云函数] [login] 调用失败', err)
+      }
+    });
   },
   onShow: function (options){
       wx.setStorageSync('openLinkCount', 0);
@@ -164,6 +186,7 @@ Page({
                           db.collection('posts').add({
                             data: {
                               _id: item.slug,
+                              date: new Date(),
                               comments: 0,
                               views: 0,
                               likes: 0
@@ -174,11 +197,17 @@ Page({
                       item.date = util.cutstr(item.date, 10, 1);
                       return item;
                     })).map(item => {
-                      let record = self.data.postsDb.filter(post => post._id == item.slug);
-                      if (record.length > 0) {
-                        item.commentNum = record[0].comments;
-                        item.viewNum = record[0].views;
-                        item.likeNum = record[0].likes;
+                      let record = null;
+                      self.data.postsDb.some(post => {
+                        if (post._id == item.slug) {
+                          record = post
+                          return true
+                        }
+                      });
+                      if (record != null) {
+                        item.commentNum = record.comments;
+                        item.viewNum = record.views;
+                        item.likeNum = record.likes;
                       }
                       return item;
                     })

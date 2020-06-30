@@ -65,7 +65,7 @@ Page({
     getLikeList: function(id){
         var self = this;
         wx.cloud.callFunction({
-            name: 'db',
+            name: 'likes',
             data: {
                 postId: id
             },
