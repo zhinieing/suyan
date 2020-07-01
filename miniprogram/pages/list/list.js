@@ -143,33 +143,34 @@ Page({
         isSearchPage:"block"
       })
     }   
-    wx.cloud.callFunction({
-      name: 'posts',
-      data: {},
-      success: res => {
-          self.setData({
-            postsDb: res.result.data,
-            postsList: self.data.postsList.map(item => {
-              let record = null;
-              res.result.data.some(post => {
-                if (post._id == item.slug) {
-                  record = post
-                  return true
-                }
-              });
-              if (record != null) {
-                item.commentNum = record.comments;
-                item.viewNum = record.views;
-                item.likeNum = record.likes;
-              }
-              return item;
-            })
-          })
+    db.collection('posts').orderBy('date', 'desc').get({
+      success: function(res) {
+        self.setData({
+          postsDb: res.data
+        })
+        if (res.data.length >= 20) {
+          wx.cloud.callFunction({
+            name: 'posts',
+            data: {},
+            success: res => {
+                self.setData({
+                  postsDb: res.result.data,
+                  postsList: self.data.postsList.map(item => {
+                    let record = res.result.data.find(post => post._id == item.slug);
+                    console.log(record)
+                    if (record != null) {
+                      item.commentNum = record.comments;
+                      item.viewNum = record.views;
+                      item.likeNum = record.likes;
+                    }
+                    return item;
+                  })
+                })
+            }
+          });
+        }
       },
-      fail: err => {
-        console.error('[云函数] [login] 调用失败', err)
-      }
-    });
+    })
     this.fetchPostsData(self.data); 
   },
   //获取文章列表数据
@@ -227,13 +228,7 @@ Page({
                   post.cover = item.cover
                   post.date = util.cutstr(item.date, 10, 1)
   
-                  let record = null;
-                  self.data.postsDb.some(post => {
-                    if (post._id == item.slug) {
-                      record = post
-                      return true
-                    }
-                  });
+                  let record = self.data.postsDb.find(post => post._id == item.slug);
                   if (record != null) {
                     post.commentNum = record.comments;
                     post.viewNum = record.views;
@@ -256,11 +251,11 @@ Page({
                   item.date = util.cutstr(item.date, 10, 1);
                   return item;
                 })).map(item => {
-                  let record = self.data.postsDb.filter(post => post._id == item.slug);
-                  if (record.length > 0) {
-                    item.commentNum = record[0].comments;
-                    item.viewNum = record[0].views;
-                    item.likeNum = record[0].likes;
+                  let record = self.data.postsDb.find(post => post._id == item.slug);
+                  if (record != null) {
+                    item.commentNum = record.comments;
+                    item.viewNum = record.views;
+                    item.likeNum = record.likes;
                   }
                   return item;
                 })
@@ -274,7 +269,6 @@ Page({
     })
     .catch(function(error){        
         if (data.page == 1) {
-            console.log(error)
             self.setData({
                 showerror: "block",
                 floatDisplay: "none"

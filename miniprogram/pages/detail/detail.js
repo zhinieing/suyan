@@ -126,11 +126,13 @@ Page({
                                     'postDb.likes': self.data.postDb.likes - 1
                                 });  
                                 self.getLikeList(self.data.detail.slug)
-                                db.collection('posts').doc(self.data.detail.slug).update({
-                                    data: {
-                                        likes: self.data.postDb.likes
-                                    }
-                                })
+                                if (self.data.postDb.likes) {
+                                    db.collection('posts').doc(self.data.detail.slug).update({
+                                        data: {
+                                            likes: self.data.postDb.likes
+                                        }
+                                    })
+                                }
                             }
                           })
                         } 
@@ -152,11 +154,13 @@ Page({
                             'postDb.likes': self.data.postDb.likes + 1
                         });  
                         self.getLikeList(self.data.detail.slug)
-                        db.collection('posts').doc(self.data.detail.slug).update({
-                            data: {
-                                likes: self.data.postDb.likes
-                            }
-                        })
+                        if (self.data.postDb.likes) {
+                            db.collection('posts').doc(self.data.detail.slug).update({
+                                data: {
+                                    likes: self.data.postDb.likes
+                                }
+                            })
+                        }
                     },
                     fail: function(res) {
                         self.setData({
@@ -224,16 +228,18 @@ Page({
                     wx.setNavigationBarTitle({
                         title: response.data.title
                     });
-
-                    db.collection('posts').doc(id).update({
-                        data: {
-                            views: self.data.postDb.views
-                        }
-                    });
-
+                
                     self.getIslike(id);
                     self.getLikeList(id);
                     self.getCommentList(id, self.data.page);
+
+                    if (self.data.postDb.views) {
+                        db.collection('posts').doc(id).update({
+                            data: {
+                                views: self.data.postDb.views
+                            }
+                        });
+                    }
 
                     // 调用API从本地缓存中获取阅读记录并记录
                     var logs = wx.getStorageSync('readLogs') || [];
@@ -386,11 +392,13 @@ Page({
                     'postDb.comments': self.data.postDb.comments - 1
                 });
                 self.getCommentList(self.data.detail.slug, self.data.page)
-                db.collection('posts').doc(self.data.detail.slug).update({
-                    data: {
-                        comments: self.data.postDb.comments
-                    }
-                })
+                if (self.data.postDb.comments) {
+                    db.collection('posts').doc(self.data.detail.slug).update({
+                        data: {
+                            comments: self.data.postDb.comments
+                        }
+                    })
+                }
             }
         })
     },
@@ -509,11 +517,13 @@ Page({
                             'postDb.comments': self.data.postDb.comments + 1
                         });
                         self.getCommentList(self.data.detail.slug, self.data.page)
-                        db.collection('posts').doc(self.data.detail.slug).update({
-                            data: {
-                                comments: self.data.postDb.comments
-                            }
-                        })
+                        if (self.data.postDb.comments) {
+                            db.collection('posts').doc(self.data.detail.slug).update({
+                                data: {
+                                    comments: self.data.postDb.comments
+                                }
+                            })
+                        }
                     },
                     fail: function(res) {
                         self.setData({

@@ -81,33 +81,13 @@ Page({
     var self = this; 
     this.fetchTopFivePosts();   
     this.fetchPostsData(self.data);
-    wx.cloud.callFunction({
-      name: 'posts',
-      data: {},
-      success: res => {
-          self.setData({
-            postsDb: res.result.data,
-            postsList: self.data.postsList.map(item => {
-              let record = null;
-              res.result.data.some(post => {
-                if (post._id == item.slug) {
-                  record = post
-                  return true
-                }
-              });
-              if (record != null) {
-                item.commentNum = record.comments;
-                item.viewNum = record.views;
-                item.likeNum = record.likes;
-              }
-              return item;
-            })
-          })
+    db.collection('posts').orderBy('date', 'desc').limit(10).get({
+      success: function(res) {
+        self.setData({
+          postsDb: res.data
+        })
       },
-      fail: err => {
-        console.error('[云函数] [login] 调用失败', err)
-      }
-    });
+    })
   },
   onShow: function (options){
       wx.setStorageSync('openLinkCount', 0);
@@ -197,13 +177,7 @@ Page({
                       item.date = util.cutstr(item.date, 10, 1);
                       return item;
                     })).map(item => {
-                      let record = null;
-                      self.data.postsDb.some(post => {
-                        if (post._id == item.slug) {
-                          record = post
-                          return true
-                        }
-                      });
+                      let record = self.data.postsDb.find(post => post._id == item.slug);
                       if (record != null) {
                         item.commentNum = record.comments;
                         item.viewNum = record.views;
@@ -257,6 +231,15 @@ Page({
       });
       //console.log('当前页' + self.data.page);
       this.fetchPostsData(self.data);
+      db.collection('posts')
+        .orderBy('date', 'desc')
+        .skip(10 * (self.data.page - 1)).limit(10).get({
+        success: function(res) {
+          self.setData({
+            postsDb: self.data.postsDb.concat(res.data)
+          })
+        },
+      })
     }
     else
     {
