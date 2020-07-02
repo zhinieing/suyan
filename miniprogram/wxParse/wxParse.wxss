@@ -80,7 +80,7 @@ view{
 .wxParse-strong,.wxParse-s{display: inline}
 .wxParse-a{
     color: deepskyblue;
-    word-break:break-all;
+    word-break:break-all; 
     overflow:auto;
 }
 
@@ -110,7 +110,7 @@ view{
 
 .wxParse-blockquote {
     margin: 0;
-    padding:10px 0 10px 5px;
+    padding:10px 0 10px 29px;
     font-family:Courier, Calibri,"宋体";
     background:#f5f5f5;
     border-left: 3px solid #dbdbdb;

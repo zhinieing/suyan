@@ -119,17 +119,23 @@ Page({
                           db.collection('likes').where({
                             _openid: app.globalData.openid,
                             postId: self.data.detail.slug 
-                          }).remove({
+                          }).get({
                             success: function(res) {
-                                self.setData({
-                                    isLike: false,
-                                    'postDb.likes': self.data.postDb.likes - 1
-                                });  
-                                self.getLikeList(self.data.detail.slug)
-                                if (self.data.postDb.likes) {
-                                    db.collection('posts').doc(self.data.detail.slug).update({
-                                        data: {
-                                            likes: self.data.postDb.likes
+                                if (res.data.length > 0) {
+                                    db.collection('likes').doc(res.data[0]._id).remove({
+                                        success: function(res) {
+                                            self.setData({
+                                                isLike: false,
+                                                'postDb.likes': self.data.postDb.likes - 1
+                                            });  
+                                            self.getLikeList(self.data.detail.slug)
+                                            if (self.data.postDb.likes != null) {
+                                                db.collection('posts').doc(self.data.detail.slug).update({
+                                                    data: {
+                                                        likes: self.data.postDb.likes
+                                                    }
+                                                })
+                                            }
                                         }
                                     })
                                 }
@@ -154,7 +160,7 @@ Page({
                             'postDb.likes': self.data.postDb.likes + 1
                         });  
                         self.getLikeList(self.data.detail.slug)
-                        if (self.data.postDb.likes) {
+                        if (self.data.postDb.likes != null) {
                             db.collection('posts').doc(self.data.detail.slug).update({
                                 data: {
                                     likes: self.data.postDb.likes
@@ -233,7 +239,7 @@ Page({
                     self.getLikeList(id);
                     self.getCommentList(id, self.data.page);
 
-                    if (self.data.postDb.views) {
+                    if (self.data.postDb.views != null) {
                         db.collection('posts').doc(id).update({
                             data: {
                                 views: self.data.postDb.views
@@ -392,7 +398,7 @@ Page({
                     'postDb.comments': self.data.postDb.comments - 1
                 });
                 self.getCommentList(self.data.detail.slug, self.data.page)
-                if (self.data.postDb.comments) {
+                if (self.data.postDb.comments != null) {
                     db.collection('posts').doc(self.data.detail.slug).update({
                         data: {
                             comments: self.data.postDb.comments
@@ -496,43 +502,61 @@ Page({
                     'dialog.content': '评论内容不能为空'
                 });
             } else {
-                db.collection('comments').add({
+                wx.cloud.callFunction({
+                    name: 'msgCheck',
                     data: {
-                        postId: self.data.detail.slug,
-                        title: self.data.detail.title,
-                        cover: self.data.detail.cover,
-                        content: self.data.inputComment,
-                        nickName: e.detail.userInfo.nickName,
-                        avatarUrl: e.detail.userInfo.avatarUrl,
-                        date: new Date()
+                        msg: self.data.inputComment
                     },
-                    success: function(res) {
-                        wx.showToast({
-                          title: '评论成功'
-                        })
-                        self.setData({
-                            page: 1,
-                            commentList: [],
-                            inputComment: '',
-                            'postDb.comments': self.data.postDb.comments + 1
-                        });
-                        self.getCommentList(self.data.detail.slug, self.data.page)
-                        if (self.data.postDb.comments) {
-                            db.collection('posts').doc(self.data.detail.slug).update({
+                    success: res => {
+                        if (res.result &&res.result.errCode == 87014) {
+                            wx.showToast({
+                              title: '文字违规',
+                            })
+                        } else {
+                            db.collection('comments').add({
                                 data: {
-                                    comments: self.data.postDb.comments
+                                    postId: self.data.detail.slug,
+                                    title: self.data.detail.title,
+                                    cover: self.data.detail.cover,
+                                    content: self.data.inputComment,
+                                    nickName: e.detail.userInfo.nickName,
+                                    avatarUrl: e.detail.userInfo.avatarUrl,
+                                    date: new Date()
+                                },
+                                success: function(res) {
+                                    wx.showToast({
+                                      title: '评论成功'
+                                    })
+                                    self.setData({
+                                        page: 1,
+                                        commentList: [],
+                                        inputComment: '',
+                                        'postDb.comments': self.data.postDb.comments + 1
+                                    });
+                                    self.getCommentList(self.data.detail.slug, self.data.page)
+                                    if (self.data.postDb.comments != null) {
+                                        db.collection('posts').doc(self.data.detail.slug).update({
+                                            data: {
+                                                comments: self.data.postDb.comments
+                                            }
+                                        })
+                                    }
+                                },
+                                fail: function(res) {
+                                    self.setData({
+                                        'dialog.hidden': false,
+                                        'dialog.title': '提示',
+                                        'dialog.content': '评论文章失败'
+                                    });
                                 }
                             })
                         }
+                        
                     },
-                    fail: function(res) {
-                        self.setData({
-                            'dialog.hidden': false,
-                            'dialog.title': '提示',
-                            'dialog.content': '评论文章失败'
-                        });
+                    fail: err => {
+                      console.error('[云函数] [login] 调用失败', err)
                     }
-                })
+                }); 
             }  
         } else {
             self.setData({

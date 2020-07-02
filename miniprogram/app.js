@@ -13,7 +13,7 @@ App({
         data: {},
         success: res => {
           if (res.result) {
-            self.globalData.openid = res.result.openid
+            self.globalData.openid = res.result.OPENID
           }
         },
         fail: err => {
