@@ -54,9 +54,15 @@ Page({
         var self = this;
         db.collection('posts').doc(options.id).get({
             success: function(res) {
+                res.data.views = res.data.views + 1
                 self.setData({
                     postDb: res.data
                 })
+                db.collection('posts').doc(options.id).update({
+                    data: {
+                        views: res.data.views
+                    }
+                });
             },
             fail: function() {
             }
@@ -81,8 +87,8 @@ Page({
     },
     onShareAppMessage: function (res) {
         return {
-          title: '分享"' + config.getWebsiteName +'"的文章：' + this.data.detail.title.rendered,
-            path: 'pages/detail/detail?id=' + this.data.detail.id,
+          title: '分享"' + config.getWebsiteName +'"的文章：' + this.data.detail.title,
+            path: 'pages/detail/detail?id=' + this.data.detail.slug,
             success: function (res) {
                 // 转发成功
                 console.log(res);
@@ -227,8 +233,7 @@ Page({
                         link: config.getDomain + '/' + id,
                         detailDate: util.cutstr(response.data.date, 10, 1),
                         wxParseData: WxParse.wxParse('article', 'html', response.data.content, self, 5),
-                        display: 'block',
-                        'postDb.views': self.data.postDb.views + 1
+                        display: 'block'
                     });
 
                     wx.setNavigationBarTitle({
@@ -238,14 +243,6 @@ Page({
                     self.getIslike(id);
                     self.getLikeList(id);
                     self.getCommentList(id, self.data.page);
-
-                    if (self.data.postDb.views != null) {
-                        db.collection('posts').doc(id).update({
-                            data: {
-                                views: self.data.postDb.views
-                            }
-                        });
-                    }
 
                     // 调用API从本地缓存中获取阅读记录并记录
                     var logs = wx.getStorageSync('readLogs') || [];

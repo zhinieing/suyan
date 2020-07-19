@@ -40,18 +40,16 @@ Page({
     var title = "分享“素言”";
     var path =""
 
-    if (this.data.categoryId)
-  {
+    if (this.data.categoryId) {
       title += "的专题：" + this.data.categoryId;
       path = 'pages/list/list?categoryId=' + this.data.categoryId;
-
-  }
-  else
-  {
+    } else if (this.data.tagId) {
+      title += "的标签：" + this.data.tagId;
+      path = 'pages/list/list?tagId=' + this.data.tagId;
+    } else {
       title += "的搜索内容：" + this.data.search;
       path = 'pages/list/list?search=' + this.data.search;
-  }
-
+    }
 
     return {
       title: title,
