@@ -66,7 +66,11 @@ Page({
             },
             fail: function() {
             }
-          });
+        });
+        wx.showShareMenu({
+            withShareTicket: true,
+            menus: ['shareAppMessage', 'shareTimeline']
+        });
     },    
     getLikeList: function(id){
         var self = this;
@@ -97,6 +101,13 @@ Page({
                 console.log(res);
                 // 转发失败
             }  
+        }
+    },
+    onShareTimeline: function (res) {
+        return {
+            title: this.data.detail.title,
+            path: 'id=' + this.data.detail.slug,
+            imageUrl: this.data.detail.cover 
         }
     },
     copyLink: function () {
