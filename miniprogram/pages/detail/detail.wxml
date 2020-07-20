@@ -3,7 +3,7 @@
 <import src="../../templates/header.wxml" />
 <import src="../../templates/copyright.wxml" />
 <view class="container">
-  <audio src="{{article.music}}" poster="{{article.poster}}" name="{{article.musicName}}" author="{{article.musicAuthor}}" controls loop id="myAudio" style="margin-top: 8rpx;"></audio>
+  <audio src="{{article.music}}" poster="{{article.poster}}" name="{{article.musicName}}" author="{{article.musicAuthor}}" controls loop id="myAudio" style="margin-top:8rpx;display:{{article.music ? 'block' : 'none'}}"></audio>
   <view class="content-article-detail" style="display:{{display}}">
     <view class="entry-title">
       {{detail.title}}
