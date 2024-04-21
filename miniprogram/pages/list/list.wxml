@@ -6,7 +6,7 @@
 
     <view class="topic-common-list" style="display:{{isCategoryPage}}">
       <view class="topic-list-item">
-        <image src="{{'https://suyan.peng-ming.cn/categories/' + categoryId + '.jpg'}}" mode="aspectFill" class="cover">
+        <image src="{{postsList.length > 0 ? postsList[0].cover : '../../images/logo_black.jpg'}}" mode="aspectFill" class="cover">
         </image>
         <view class="topic-content-title">
           {{categoryId}}

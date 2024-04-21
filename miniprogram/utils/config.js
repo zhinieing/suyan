@@ -2,7 +2,7 @@
 
 
 
-var DOMAIN = "www.peng-ming.cn";//配置域名,域名只修改此处
+var DOMAIN = "zhinieing.github.io";//配置域名,域名只修改此处
 var WEBSITENAME="素suyan言"; //网站名称
 var ABOUTID= 23; //wordpress网站关于页面的id
 //var TEMPPLATEID = 'hzKpxuPF2rw7O-qTElkeoE0lMwr0O4t9PJkLyt6v8rk';//消息模版id

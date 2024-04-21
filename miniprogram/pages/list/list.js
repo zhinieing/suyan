@@ -272,7 +272,6 @@ Page({
                 floatDisplay: "none"
             });
         }
-
     })
     .finally(function () {
         wx.hideLoading();

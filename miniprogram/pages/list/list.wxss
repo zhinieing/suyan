@@ -37,12 +37,12 @@
   position: absolute;
   display: inline-block;
   margin: 16rpx;
-  border-bottom: 1px solid #3a4040;
+  border-bottom: 1px solid #fff;
   z-index: 2;
   left: 60rpx;
   top: 120rpx;
   font-size: 48rpx;
-  color: #3a4040;
+  color: #fff;
 }
 
 
